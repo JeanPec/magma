@@ -1,20 +1,27 @@
 ---
 name: build-all
 
+#on:  # yamllint disable-line rule:truthy
+  #push:
+  #  branches:
+  #    - master
+  #    - v1.*
+  #pull_request:
+  #  branches:
+  #    - master
+  #    - v1.*
+  #  types: [opened, reopened, synchronize]
+
 on:  # yamllint disable-line rule:truthy
-  push:
-    branches:
-      - master
-      - v1.*
   pull_request:
     branches:
       - master
       - v1.*
-    types: [opened, reopened, synchronize]
 
 jobs:
   build_publish_helm_charts:
-    if: github.repository_owner == 'magma'
+  #for test
+    #if: github.repository_owner == 'magma'
     env:
       HELM_CHART_ARTIFACTORY_URL: "https://artifactory.magmacore.org:443/artifactory/"
       HELM_CHART_MUSEUM_REPO: helm-test
@@ -26,6 +33,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - name: Debug Infos
+        uses: hmarr/debug-action@v2
+      - name: Test Files
+        run: |
+          ls orc8r/tools/helm/
+      - name: Test Package
+        run: |
+          cat orc8r/tools/helm/package.sh
+      - name: Test Package
+        run: |
+          cat orc8r/tools/helm/promote.sh
+      # - name: Check Version Number
       # Version is github job run number when running on master
       # Or is branch name when on release branch
       - name: Set Helm chart version
